@@ -44,6 +44,7 @@ class CHash {
   Хранение данных производится вне рамок данного класса!
   */
   struct leaf {
+    leaf() = default;
     T *pData = nullptr;
     leaf *pnext = nullptr;
   };
@@ -65,7 +66,7 @@ class CHash {
   Все создаваемые листики списков разрешения коллизий храним в менеджере памяти.
   */
   CHash(int hashTableSize, int defaultBlockSize) {
-    m_Memory = CMemoryManager<T>(defaultBlockSize, true);
+    m_Memory = CMemoryManager<leaf>(defaultBlockSize, true);
     m_tableSize = hashTableSize;
     m_pTable = new leaf *[m_tableSize];
     for (int i = 0; i < hashTableSize; ++i) {
@@ -84,7 +85,7 @@ class CHash {
   */
   bool add(T *pElement) {
     unsigned int idx;
-    if (findLeaf(*pElement, idx) != nullptr) {
+    if (findLeaf(pElement, idx) != nullptr) {
       return false;
     }
     leaf *first = m_pTable[idx];
@@ -100,7 +101,7 @@ class CHash {
   */
   bool update(T *pElement) {
     unsigned int idx;
-    if (findLeaf(*pElement, idx) != nullptr) {
+    if (findLeaf(pElement, idx) != nullptr) {
       return true;
     }
     leaf *first = m_pTable[idx];
@@ -131,17 +132,16 @@ class CHash {
     if (findLeaf(&element, idx) == nullptr) {
       return false;
     }
-    const T *pElement = &element;
     leaf *prev_curr = nullptr;
     leaf *curr = m_pTable[idx];
-    while (Compare(pElement, curr->pData) != 0) {
+    while (Compare(&element, curr->pData) != 0) {
       prev_curr = curr;
       curr = curr->pnext;
     }
     if (prev_curr != nullptr) {
-      prev_curr->pnext = curr->next;
+      prev_curr->pnext = curr->pnext;
     }
-    delete curr;
+    m_Memory.deleteObject(curr);
     return true;
   }
 
@@ -151,6 +151,7 @@ class CHash {
   void clear() {
     m_Memory.clear();
     delete[] m_pTable;
+    m_pTable = nullptr;
   }
  private:
   /**
@@ -164,11 +165,11 @@ class CHash {
    4. Если ничего не нашли, то возвращаем null
   */
   leaf *findLeaf(const T *pElement, unsigned int& idx) {
-    idx = HashFunc(*pElement);
+    idx = HashFunc(pElement);
     idx = idx % m_tableSize;
     leaf *curr = m_pTable[idx];
     while (curr != nullptr) {
-      if (Compare(pElement, curr) != 0) {
+      if (Compare(pElement, curr->pData) == 0) {
         return curr;
       }
       curr = curr->pnext;
@@ -187,7 +188,7 @@ class CHash {
   /**
   Менеджер памяти, предназначен для хранение листов списков разрешения коллизий
   */
-  CMemoryManager<leaf> m_Memory;
+  CMemoryManager<leaf> m_Memory = CMemoryManager<leaf>(1, true);
 };
 }; // namespace templates
 
