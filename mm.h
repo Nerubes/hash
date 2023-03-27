@@ -15,13 +15,13 @@ class CMemoryManager {
       firstFreeIndex = 0;
       usedCount = 0;
     }
-    // Массив данных блока
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     T *pdata;
-    // Адрес следующего блока
+    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     block *pnext;
-    // Первая свободная ячейка
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     int firstFreeIndex;
-    // Число заполненных ячеек
+    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     int usedCount;
   };
 
@@ -33,9 +33,9 @@ class CMemoryManager {
 
  public:
   /**
-    _default_block_size - количество элементов в блоке данных
-    isDeleteElementsOnDestruct - уничтожать елементы в деструкторе менеджера или
-    проверять на наличие неосвобожденных функцией deleteObject элементов.
+    _default_block_size - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+    isDeleteElementsOnDestruct - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
+    пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ deleteObject пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
   */
   CMemoryManager(int _default_block_size,
                  bool isDeleteElementsOnDestruct = false) {
@@ -49,7 +49,7 @@ class CMemoryManager {
     clear();
   }
 
-  // Получить адрес нового элемента из менеджера
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   T *newObject() {
     if (m_pCurrentBlk == nullptr) {
       block *new_block = newBlock();
@@ -73,15 +73,15 @@ class CMemoryManager {
       }
     }
     int free = m_pCurrentBlk->firstFreeIndex;
-    int next_free = *reinterpret_cast<int*>(m_pCurrentBlk->pdata + m_pCurrentBlk->firstFreeIndex);
-    memset(reinterpret_cast<void*>((m_pCurrentBlk->pdata + free)), 0, sizeof(T));
+    int next_free = *reinterpret_cast<int *>(m_pCurrentBlk->pdata + m_pCurrentBlk->firstFreeIndex);
+    memset(reinterpret_cast<void *>((m_pCurrentBlk->pdata + free)), 0, sizeof(T));
     m_pCurrentBlk->firstFreeIndex = next_free;
     ++m_pCurrentBlk->usedCount;
-    T* obj = new ((m_pCurrentBlk->pdata + free)) T();
+    T *obj = new((m_pCurrentBlk->pdata + free)) T();
     return obj;
   }
 
-  // Освободить элемент в менеджере
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   bool deleteObject(T *p) {
     block *del_block = m_pBlocks;
     while (del_block != nullptr) {
@@ -91,7 +91,7 @@ class CMemoryManager {
           if ((del_block->pdata + free) == p) {
             return false;
           }
-          free = *reinterpret_cast<int*>(del_block->pdata + free);
+          free = *reinterpret_cast<int *>(del_block->pdata + free);
         }
         m_pCurrentBlk = del_block;
         --m_pCurrentBlk->usedCount;
@@ -105,7 +105,7 @@ class CMemoryManager {
     return false;
   }
 
-  // Очистка данных, зависит от m_isDeleteElementsOnDestruct
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ m_isDeleteElementsOnDestruct
   void clear() {
     if (m_isDeleteElementsOnDestruct) {
       while (m_pBlocks != nullptr) {
@@ -138,7 +138,7 @@ class CMemoryManager {
   }
 
  private:
-  // Создать новый блок данных. применяется в newObject
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ newObject
   block *newBlock() {
     T *data = reinterpret_cast<T *>(new char[sizeof(T) * m_blkSize]);
     auto new_block = new block(data);
@@ -148,19 +148,19 @@ class CMemoryManager {
     return new_block;
   }
 
-  // Освободить память блока данных. Применяется в clear
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ clear
   void deleteBlock(block *p) {
     delete[] reinterpret_cast<char *>(p->pdata);
     delete p;
   }
 
-  // Размер блока
+  // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
   int m_blkSize;
-  // Начало списка блоков
+  // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
   block *m_pBlocks;
-  // Текущий блок
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
   block *m_pCurrentBlk;
-  // Удалять ли элементы при освобождении
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   bool m_isDeleteElementsOnDestruct;
 };
 };  // namespace lab618

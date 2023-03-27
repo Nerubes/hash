@@ -67,7 +67,7 @@ class CHash {
   CHash(int hashTableSize, int defaultBlockSize) {
     m_Memory = CMemoryManager<T>(defaultBlockSize, true);
     m_tableSize = hashTableSize;
-    m_pTable = new leaf* [m_tableSize];
+    m_pTable = new leaf *[m_tableSize];
     for (int i = 0; i < hashTableSize; ++i) {
       m_pTable[i] = nullptr;
     }
@@ -87,8 +87,8 @@ class CHash {
     if (findLeaf(*pElement, idx) != nullptr) {
       return false;
     }
-    leaf* first = m_pTable[idx];
-    leaf* newFirst = m_Memory.newObject();
+    leaf *first = m_pTable[idx];
+    leaf *newFirst = m_Memory.newObject();
     newFirst->pnext = first;
     newFirst->pData = pElement;
     m_pTable[idx] = newFirst;
@@ -103,8 +103,8 @@ class CHash {
     if (findLeaf(*pElement, idx) != nullptr) {
       return true;
     }
-    leaf* first = m_pTable[idx];
-    leaf* newFirst = m_Memory.newObject();
+    leaf *first = m_pTable[idx];
+    leaf *newFirst = m_Memory.newObject();
     newFirst->pnext = first;
     newFirst->pData = pElement;
     m_pTable[idx] = newFirst;
@@ -116,7 +116,7 @@ class CHash {
   Обратите внимание, что для поиска используется частично заполненный объект, т.е. В нем должны быть заполнены поля на основе которых рассчитывается хеш.*/
   T *find(const T& element) {
     unsigned int idx;
-    leaf* ans = findLeaf(&element, idx);
+    leaf *ans = findLeaf(&element, idx);
     if (ans == nullptr) {
       return nullptr;
     }
@@ -131,9 +131,9 @@ class CHash {
     if (findLeaf(&element, idx) == nullptr) {
       return false;
     }
-    const T* pElement = &element;
-    leaf* prev_curr = nullptr;
-    leaf* curr = m_pTable[idx];
+    const T *pElement = &element;
+    leaf *prev_curr = nullptr;
+    leaf *curr = m_pTable[idx];
     while (Compare(pElement, curr->pData) != 0) {
       prev_curr = curr;
       curr = curr->pnext;
