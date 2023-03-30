@@ -101,7 +101,9 @@ class CHash {
   */
   bool update(T *pElement) {
     unsigned int idx;
-    if (findLeaf(pElement, idx) != nullptr) {
+    leaf *element = findLeaf(pElement, idx);
+    if (element != nullptr) {
+      element->pData = pElement;
       return true;
     }
     leaf *first = m_pTable[idx];
